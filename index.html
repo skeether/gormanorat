@@ -1,124 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Видео — подтверждение</title>
-  <style>
-    :root{
-      --bg:#000;
-      --fg:#fff;
-      --accent:#e11d48;
-    }
-    html,body{
-      height:100%;
-      margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      overflow:hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            overflow: hidden;
+        }
 
-    .page{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background:var(--bg);
-      flex-direction:column;
-    }
-    .page.active{display:flex;}
+        #modal, #video-container, #bye-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-    .title{
-      font-size:clamp(28px,6vw,80px);
-      text-align:center;
-      text-transform:uppercase;
-      font-weight:800;
-    }
+        #modal {
+            z-index: 100;
+            background-color: black;
+        }
 
-    .controls{
-      display:flex;
-      gap:20px;
-      margin-top:40px;
-    }
+        #video-container {
+            display: none;
+            z-index: 90;
+        }
 
-    .btn{
-      background:none;
-      border:2px solid rgba(255,255,255,0.3);
-      color:var(--fg);
-      padding:12px 30px;
-      font-size:20px;
-      text-transform:uppercase;
-      cursor:pointer;
-      border-radius:10px;
-      transition:background .3s;
-    }
-    .btn:hover{background:rgba(255,255,255,0.1);}
+        #bye-screen {
+            display: none;
+            z-index: 80;
+            background-color: black;
+        }
 
-    /* Привет экран */
-    #deniedScreen{
-      color:var(--accent);
-      font-size:clamp(40px,10vw,160px);
-      font-weight:900;
-      text-transform:lowercase;
-    }
+        #bye-screen h1 {
+            color: red;
+            font-size: 5em;
+        }
 
-    /* Видео страница */
-    #videoPage video{
-      width:1920px;
-      height:1080px;
-      object-fit:cover;
-      background:#000;
-      border-radius:20px;
-      outline:none;
-    }
-  </style>
+        h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Первая страница -->
-  <div id="startPage" class="page active">
-    <h1 class="title">Вы действительно хотите посмотреть это видео?</h1>
-    <div class="controls">
-      <button id="yesBtn" class="btn">да</button>
-      <button id="noBtn" class="btn">нет</button>
+    <!-- Начальное модальное окно -->
+    <div id="modal">
+        <h1>ВЫ ДЕЙСТВИТЕЛЬНО ХОТИТЕ ПОСМОТРЕТЬ ЭТО ВИДЕО?</h1>
+        <button id="yes-btn">ДА</button>
+        <button id="no-btn">НЕТ</button>
     </div>
-  </div>
 
-  <!-- Видео страница -->
-  <div id="videoPage" class="page">
-    <video id="mainVideo" autoplay loop playsinline></video>
-  </div>
+    <!-- Контейнер для видео -->
+    <div id="video-container">
+        <video id="video-player" controls autoplay>
+            <source src="video.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
 
-  <!-- Страница привет -->
-  <div id="deniedPage" class="page">
-    <div id="deniedScreen">привет</div>
-  </div>
+    <!-- Экран "привет" -->
+    <div id="bye-screen">
+        <h1>привет</h1>
+    </div>
 
-  <script>
-    const startPage = document.getElementById('startPage');
-    const videoPage = document.getElementById('videoPage');
-    const deniedPage = document.getElementById('deniedPage');
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn = document.getElementById('noBtn');
-    const video = document.getElementById('mainVideo');
+    <script>
+        document.getElementById('yes-btn').addEventListener('click', function() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('video-container').style.display = 'flex';
+            document.getElementById('video-player').play();
+        });
 
-    yesBtn.addEventListener('click', () => {
-      // Переходим на другую страницу (имитация перехода)
-      startPage.classList.remove('active');
-      videoPage.classList.add('active');
+        document.getElementById('no-btn').addEventListener('click', function() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('bye-screen').style.display = 'flex';
+        });
+    </script>
 
-      // Загружаем видео
-      video.src = 'video.mp4';
-      video.muted = false; // включаем звук
-      video.play().catch(err => console.warn('Ошибка воспроизведения:', err));
-    });
-
-    noBtn.addEventListener('click', () => {
-      startPage.classList.remove('active');
-      deniedPage.classList.add('active');
-    });
-  </script>
 </body>
 </html>
