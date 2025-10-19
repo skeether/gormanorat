@@ -3,56 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подтверждение</title>
+    <title>Видео</title>
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            background-color: black;
-            color: white;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
             font-family: Arial, sans-serif;
-            height: 100%;
+            overflow: hidden;
+        }
+
+        .warning-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
+        }
+
+        .warning-text {
+            font-size: 8vw;
+            font-weight: bold;
             text-align: center;
+            margin-bottom: 5vh;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
-        h1 {
-            font-size: 3em;
-            margin-bottom: 50px;
-        }
-
-        .buttons-container {
+        .button-container {
             display: flex;
-            justify-content: space-around;
-            width: 60%;
+            gap: 20px;
         }
 
-        button {
-            background-color: #333;
-            color: white;
+        .btn {
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
             border: none;
-            padding: 20px 40px;
-            font-size: 1.5em;
+            border-radius: 10px;
             cursor: pointer;
-            border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
-        button:hover {
-            background-color: #555;
+        .btn-yes {
+            background-color: #00ff00;
+            color: #000000;
+        }
+
+        .btn-yes:hover {
+            background-color: #00cc00;
+            transform: scale(1.05);
+        }
+
+        .btn-no {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+
+        .btn-no:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+        }
+
+        .video-screen {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hello-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .hello-text {
+            font-size: 12vw;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .warning-text {
+                font-size: 12vw;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 20px;
+            }
+            
+            .hello-text {
+                font-size: 18vw;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div>
-        <h1>ВЫ ДЕЙСТВИТЕЛЬНО ХОТИТЕ ПОСМОТРЕТЬ ЭТО ВИДЕО?</h1>
-        <div class="buttons-container">
-            <a href="yes.html"><button>ДА</button></a>
-            <a href="no.html"><button>НЕТ</button></a>
+    <!-- Экран предупреждения -->
+    <div class="warning-screen" id="warningScreen">
+        <div class="warning-text">Вы действительно хотите посмотреть это видео?</div>
+        <div class="button-container">
+            <button class="btn btn-yes" onclick="playVideo()">ДА</button>
+            <button class="btn btn-no" onclick="showHello()">НЕТ</button>
         </div>
     </div>
 
+    <!-- Экран с видео -->
+    <div class="video-screen" id="videoScreen">
+        <video class="video-player" id="videoPlayer" controls autoplay>
+            <source src="video.mp4" type="video/mp4">
+            Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+    </div>
+
+    <!-- Экран приветствия -->
+    <div class="hello-screen" id="helloScreen">
+        <div class="hello-text">привет</div>
+    </div>
+
+    <script>
+        function playVideo() {
+            document.getElementById('warningScreen').style.display = 'none';
+            document.getElementById('videoScreen').style.display = 'block';
+            document.getElementById('videoPlayer').play();
+        }
+
+        function showHello() {
+            document.getElementById('warningScreen').style.display = 'none';
+            document.getElementById('helloScreen').style.display = 'flex';
+        }
+
+        // Предотвращаем возврат на предупреждение при обновлении страницы видео
+        window.addEventListener('beforeunload', function(e) {
+            if (document.getElementById('videoScreen').style.display === 'block') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Автозапуск видео при клике на экран (для мобильных)
+        document.getElementById('videoPlayer').addEventListener('click', function() {
+            this.play().catch(e => console.log('Автозапуск заблокирован'));
+        });
+    </script>
 </body>
 </html>
