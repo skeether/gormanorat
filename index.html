@@ -27,7 +27,6 @@
       justify-content:center;
       background:var(--bg);
       flex-direction:column;
-      transition:opacity .5s ease;
     }
     .page.active{display:flex;}
 
@@ -67,12 +66,12 @@
 
     /* Видео страница */
     #videoPage video{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
+      width:1920px;
+      height:1080px;
       object-fit:cover;
       background:#000;
+      border-radius:20px;
+      outline:none;
     }
   </style>
 </head>
@@ -89,7 +88,7 @@
 
   <!-- Видео страница -->
   <div id="videoPage" class="page">
-    <video id="mainVideo" autoplay muted loop playsinline></video>
+    <video id="mainVideo" autoplay loop playsinline></video>
   </div>
 
   <!-- Страница привет -->
@@ -105,15 +104,17 @@
     const noBtn = document.getElementById('noBtn');
     const video = document.getElementById('mainVideo');
 
-    // При нажатии на "да" — переключаем страницу и показываем видео на весь экран
     yesBtn.addEventListener('click', () => {
+      // Переходим на другую страницу (имитация перехода)
       startPage.classList.remove('active');
       videoPage.classList.add('active');
+
+      // Загружаем видео
       video.src = 'video.mp4';
-      video.play();
+      video.muted = false; // включаем звук
+      video.play().catch(err => console.warn('Ошибка воспроизведения:', err));
     });
 
-    // При нажатии на "нет" — показываем другую страницу с надписью
     noBtn.addEventListener('click', () => {
       startPage.classList.remove('active');
       deniedPage.classList.add('active');
